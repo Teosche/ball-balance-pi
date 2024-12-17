@@ -1,26 +1,25 @@
-from picamera import PiCamera
-from picamera.array import PiRGBArray
+from picamera2 import Picamera2
 import cv2
-import time
 
-camera = PiCamera()
 
-camera.resolution = (320, 320)
-camera.framerate = 32
+class Camera:
+    def __init__(self, resolution=(640, 480)):
+        self.camera = Picamera2()
+        self.camera_config = self.camera.create_preview_configuration(
+            main={"size": resolution}
+        )
+        self.camera.configure(self.camera_config)
+        self.camera.start()
 
-time.sleep(0.1)
+    def get_frame(self):
+        """
+        Cattura un frame e lo restituisce in formato JPEG.
+        """
+        frame = self.camera.capture_array()
+        # Annotazione (opzionale)
+        text = "Streaming video"
+        cv2.putText(frame, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-raw_capture = PiRGBArray(camera, size=(640, 480))
-
-for frame in camera.capture_continuous(raw_capture, format="bgr", use_video_port=True):
-
-    image = frame.array
-
-    cv2.imshow("Frame", image)
-
-    key = cv2.waitKey(1) & 0xFF
-
-    raw_capture.truncate(0)
-
-    if key == ord("q"):
-        break
+        # Converte il frame in JPEG
+        _, buffer = cv2.imencode(".jpg", frame)
+        return buffer.tobytes()
