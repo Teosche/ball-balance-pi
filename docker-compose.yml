@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  ballbalancepi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ballbalancepi
+    ports:
+      - "5000:5000"
+    devices:
+      - "/dev/video0:/dev/video0"
+    privileged: true
+    restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
