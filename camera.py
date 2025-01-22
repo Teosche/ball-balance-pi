@@ -43,7 +43,7 @@ class Camera:
             param1=100,
             param2=30,
             minRadius=2,
-            maxRadius=40,
+            maxRadius=400,
         )
 
         # Check if circles were detected
