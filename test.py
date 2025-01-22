@@ -128,11 +128,11 @@ def genera_angolo(stop_event1):
 
 
 def setup_servo():
-    pulse = 500 + (50 * 2000 / 180)
+    pulse = 500 + (40 * 2000 / 180)
     pi.set_servo_pulsewidth(SERVO_PIN, pulse)
-    pulse1 = 500 + (50 * 2000 / 180)
+    pulse1 = 500 + (40 * 2000 / 180)
     pi.set_servo_pulsewidth(SERVO_PIN1, pulse1)
-    pulse2 = 500 + (50 * 2000 / 180)
+    pulse2 = 500 + (40 * 2000 / 180)
     pi.set_servo_pulsewidth(SERVO_PIN2, pulse2)
     time.sleep(2)
 
