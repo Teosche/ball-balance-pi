@@ -89,6 +89,7 @@ def vision(stop_event1):
                         lock = False
 
                     posizione_x = linear_relation(20, 110, -5, 5, posizione_x, False)
+                    posizione_y = linear_relation(20, 110, -5, 5, posizione_y, False)
                     mod = math.sqrt(
                         (posizione_x - posizione_x_prec) ** 2
                         + (posizione_y - posizione_y_prec) ** 2
