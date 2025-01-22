@@ -6,7 +6,7 @@ import cv2
 
 
 class Camera:
-    def __init__(self, resolution=(700, 700)):
+    def __init__(self, resolution=(2592, 1944)):
         self.camera = Picamera2()
         self.camera_config = self.camera.create_preview_configuration(
             main={"size": resolution}
