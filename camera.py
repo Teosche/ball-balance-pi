@@ -23,8 +23,8 @@ class Camera:
         cv2.putText(frame, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Filters
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        # blurFrame = cv2.GaussianBlur(gray, (17, 17), 0)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blurFrame = cv2.GaussianBlur(gray, (17, 17), 0)
 
         # Init variables
         global x
@@ -36,7 +36,7 @@ class Camera:
 
         # Define circle contours
         circles = cv2.HoughCircles(
-            frame,
+            blurFrame,
             cv2.HOUGH_GRADIENT,
             1.2,
             100000,
