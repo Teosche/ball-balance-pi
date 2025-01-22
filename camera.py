@@ -36,7 +36,7 @@ class Camera:
 
         # Define circle contours
         circles = cv2.HoughCircles(
-            # blurFrame,
+            frame,
             cv2.HOUGH_GRADIENT,
             1.2,
             100000,
