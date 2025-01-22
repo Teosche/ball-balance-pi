@@ -38,6 +38,17 @@ picam2.start()
 stop_event1 = threading.Event()
 
 
+def linear_relation(a1, b1, a2, b2, x1, third):
+    result = 0
+    x2 = a2 + (x1 - a1) * (b2 - a2) / (b1 - a1)
+    x2 = round(x2, 1)
+    if third == True:
+        result = x2
+    else:
+        result = b2 - x2 + a2
+    return result
+
+
 def vision(stop_event1):
     try:
         global posizione_x
@@ -77,7 +88,7 @@ def vision(stop_event1):
                         posizione_y_prec = posizione_y
                         lock = False
 
-                    linear_relation(20, 110, -5, 5, posizione_x, 1)
+                    posizione_x = linear_relation(20, 110, -5, 5, posizione_x, False)
                     mod = math.sqrt(
                         (posizione_x - posizione_x_prec) ** 2
                         + (posizione_y - posizione_y_prec) ** 2
@@ -334,14 +345,3 @@ while opzione != 0:
         setup_servo()
     elif opzione == 0:
         pi.stop()
-
-
-def linear_relation(a1, b1, a2, b2, x1, third):
-    result = 0
-    x2 = a2 + (x1 - a1) * (b2 - a2) / (b1 - a1)
-    x2 = round(x2, 1)
-    if third == True:
-        result = x2
-    else:
-        result = b2 - x2 + a2
-    return result
