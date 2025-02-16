@@ -1,9 +1,6 @@
 from flask import Flask, Response
-from camera import Camera
 
 app = Flask(__name__)
-
-camera = Camera()
 
 
 def generate_frames():
