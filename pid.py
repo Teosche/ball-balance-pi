@@ -1,4 +1,4 @@
-class PIDController:
+class PID:
     """
     A PID controller for 2D coordinates (x, y).
 

@@ -1,4 +1,7 @@
-class ServoController:
+import time
+
+
+class Servo:
     """
     A class to manage servo motors.
     """

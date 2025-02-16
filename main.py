@@ -1,9 +1,12 @@
-from api import app
-from camera import Camera
-from pid import PIDController
-from balancer import ServoController, vision
 import threading
 import pigpio
+
+from api import app
+from camera import Camera
+from pid import PID
+from servo import Servo
+from balancer import vision
+
 
 if __name__ == "__main__":
     threading.Thread(
@@ -12,8 +15,8 @@ if __name__ == "__main__":
 
     pi = pigpio.pi()
     camera = Camera()
-    pid = PIDController(kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0))
-    servo = ServoController(pi)
+    pid = PID(kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0))
+    servo = Servo(pi)
 
     stop_event = threading.Event()
     vision_thread = threading.Thread(

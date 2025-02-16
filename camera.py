@@ -4,7 +4,7 @@ from picamera2 import Picamera2
 import cv2
 
 
-class CameraController:
+class Camera:
     """
     A class to handle camera operations, including capturing frames, detecting circles,
     calculating the speed of detected objects, and rendering overlays on the frames.
