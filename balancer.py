@@ -113,17 +113,15 @@ def calculate_speed(self, x: int, y: int, previous_x: int, previous_y: int) -> i
     return round(module)
 
 
-def vision(
-    stop_event, camera: CameraController, pid: PIDController, servo: ServoController
-):
+def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
     """
     Process camera feed and adjust servo motors based on PID control.
 
     Args:
         stop_event (threading.Event): Event to stop the loop.
         camera (Camera): Camera object.
-        pid (PIDController): PID controller.
-        servo (ServoController): Servo controller.
+        pid (PID): PID controller.
+        servo (Servo): Servo controller.
     """
     prev_x, prev_y = None, None
 
