@@ -3,9 +3,9 @@ import time
 import numpy as np
 import pigpio
 
-from pid import PIDController
-from camera import CameraController
-from servo import ServoController
+from pid import PID
+from camera import Camera
+from servo import Servo
 
 SERVO_PIN = 18
 SERVO_PIN1 = 23

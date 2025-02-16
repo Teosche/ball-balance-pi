@@ -1,4 +1,3 @@
-import math
 import numpy as np
 from picamera2 import Picamera2
 import cv2
