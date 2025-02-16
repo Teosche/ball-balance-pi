@@ -1,3 +1,4 @@
+import math
 import numpy as np
 from picamera2 import Picamera2
 import cv2
@@ -41,6 +42,20 @@ class Camera:
 
         _, buffer = cv2.imencode(".jpg", frame)
         return buffer.tobytes()
+
+    def calculate_speed(self, x: int, y: int, previous_x: int, previous_y: int) -> int:
+        """
+        Calculate the speed of the detected object between two frames.
+        Args:
+            x (int): The current x-coordinate of the object.
+            y (int): The current y-coordinate of the object.
+            previous_x (int): The previous x-coordinate of the object.
+            previous_y (int): The previous y-coordinate of the object.
+        Returns:
+            float: The calculated speed.
+        """
+        module = math.sqrt((x - previous_x) ** 2 + (y - previous_y) ** 2)
+        return round(module)
 
     def get_position_information(self, frame):
         """
