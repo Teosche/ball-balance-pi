@@ -109,10 +109,10 @@ def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
 
     while not stop_event.is_set():
         frame = camera.capture_frame()
-        camera.detect_circle(frame)
+        circle = camera.detect_circle(frame)
 
-        if camera.circle is not None:
-            pos = camera.get_position_information(frame)
+        if circle is not None:
+            pos = camera.get_position_information(circle)
             if pos is not None:
                 x, y = pos
                 no_ball_counter = 0  # resetta il contatore se rilevi qualcosa

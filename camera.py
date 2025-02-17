@@ -1,4 +1,5 @@
 import math
+from matplotlib.pylab import gray
 import numpy as np
 from picamera2 import Picamera2
 import cv2
@@ -100,9 +101,7 @@ class Camera:
         Args:
             frame (np.array): The frame in which circles are to be detected.
         """
-        blur_frame = cv2.GaussianBlur(
-            cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (17, 17), 0
-        )
+        blur_frame = cv2.GaussianBlur(cv2.GaussianBlur(gray, (17, 17), 0))
 
         self.circle = cv2.HoughCircles(
             blur_frame,
