@@ -23,8 +23,9 @@ angolo1 = 0
 angolo2 = 0
 angolo3 = 0
 
-
+#t tempo, refactored
 t = 0.05
+
 dt = 0.05
 posizione_x = 0
 posizione_y = 0
@@ -43,55 +44,55 @@ picam2.start()
 
 stop_event1 = threading.Event()
 
-class PIDController:
-    def __init__(self, kp, ki, kd, setpoint):
-        """
-        Inizializza il controllore PID per un sistema con coordinate x, y.
+# class PIDController:
+#     def __init__(self, kp, ki, kd, setpoint):
+#         """
+#         Inizializza il controllore PID per un sistema con coordinate x, y.
 
-        :param kp: Guadagno proporzionale
-        :param ki: Guadagno integrale
-        :param kd: Guadagno derivativo
-        :param setpoint: Coordinate desiderate del sistema (setpoint) come tupla (x, y)
-        """
-        self.kp = kp
-        self.ki = ki
-        self.kd = kd
-        self.setpoint = setpoint
+#         :param kp: Guadagno proporzionale
+#         :param ki: Guadagno integrale
+#         :param kd: Guadagno derivativo
+#         :param setpoint: Coordinate desiderate del sistema (setpoint) come tupla (x, y)
+#         """
+#         self.kp = kp
+#         self.ki = ki
+#         self.kd = kd
+#         self.setpoint = setpoint
 
-        self.previous_error = (0, 0)
-        self.integral = (0, 0)
+#         self.previous_error = (0, 0)
+#         self.integral = (0, 0)
 
-    def update(self, feedback_value, dt):
-        """
-        Calcola l'output del PID per ogni coordinata.
+#     def update(self, feedback_value, dt):
+#         """
+#         Calcola l'output del PID per ogni coordinata.
 
-        :param feedback_value: Coordinate misurate del sistema come tupla (x, y)
-        :param dt: Intervallo di tempo (in secondi) dall'ultimo aggiornamento
-        :return: Output del controllore PID come tupla (x, y)
-        """
-        error_x = self.setpoint[0] - feedback_value[0]
-        error_y = self.setpoint[1] - feedback_value[1]
+#         :param feedback_value: Coordinate misurate del sistema come tupla (x, y)
+#         :param dt: Intervallo di tempo (in secondi) dall'ultimo aggiornamento
+#         :return: Output del controllore PID come tupla (x, y)
+#         """
+#         error_x = self.setpoint[0] - feedback_value[0]
+#         error_y = self.setpoint[1] - feedback_value[1]
 
-        self.integral = (
-            self.integral[0] + error_x * dt,
-            self.integral[1] + error_y * dt,
-        )
+#         self.integral = (
+#             self.integral[0] + error_x * dt,
+#             self.integral[1] + error_y * dt,
+#         )
 
-        derivative_x = (error_x - self.previous_error[0]) / dt if dt > 0 else 0
-        derivative_y = (error_y - self.previous_error[1]) / dt if dt > 0 else 0
+#         derivative_x = (error_x - self.previous_error[0]) / dt if dt > 0 else 0
+#         derivative_y = (error_y - self.previous_error[1]) / dt if dt > 0 else 0
 
-        # Calcolo dell'output
-        output_x = (
-            self.kp * error_x + self.ki * self.integral[0] + self.kd * derivative_x
-        )
-        output_y = (
-            self.kp * error_y + self.ki * self.integral[1] + self.kd * derivative_y
-        )
+#         # Calcolo dell'output
+#         output_x = (
+#             self.kp * error_x + self.ki * self.integral[0] + self.kd * derivative_x
+#         )
+#         output_y = (
+#             self.kp * error_y + self.ki * self.integral[1] + self.kd * derivative_y
+#         )
 
-        # Aggiorna l'errore precedente
-        self.previous_error = (error_x, error_y)
+#         # Aggiorna l'errore precedente
+#         self.previous_error = (error_x, error_y)
 
-        return output_x, output_y
+#         return output_x, output_y
 
 def linear_relation(a1, b1, a2, b2, x1, third):
     result = 0
@@ -277,16 +278,6 @@ def vision(stop_event1):
             else:
                print("No sfera")
                 
-             
-
-    # Mostra il frame in una finestra
-    # cv2.imshow('Raspbian Camera Stream', frame)
-
-    # Esci dal ciclo se si preme il tasto 'q'
-    # if keyboard.is_pressed('q'):
-    #   print('Visione terminata')
-    #   picam2.stop()
-    #   stop_event1.set()
 
     except KeyboardInterrupt:
         print("Interruzione")
@@ -295,23 +286,23 @@ def vision(stop_event1):
         picam2.stop()
 
 
-def genera_angolo(stop_event1):
-    global angolo1
-    global angolo2
-    global angolo3
-    global lock
-    while not stop_event1.is_set():
-        angolo1 = randint(0, 180)
-        angolo2 = randint(0, 180)
-        angolo3 = randint(0, 180)
-        # print("Angolo 1 = "+str(angolo1))
-        # print("Angolo 2 = "+str(angolo2))
-        # print("Angolo 3 = "+str(angolo3))
-        time.sleep(0.1)
-        # if keyboard.is_pressed("q"):
-        #     print("Motori fermati")
-        #     picam2.stop()
-        #     stop_event1.set()
+# def genera_angolo(stop_event1):
+#     global angolo1
+#     global angolo2
+#     global angolo3
+#     global lock
+#     while not stop_event1.is_set():
+#         angolo1 = randint(0, 180)
+#         angolo2 = randint(0, 180)
+#         angolo3 = randint(0, 180)
+#         # print("Angolo 1 = "+str(angolo1))
+#         # print("Angolo 2 = "+str(angolo2))
+#         # print("Angolo 3 = "+str(angolo3))
+#         time.sleep(0.1)
+#         # if keyboard.is_pressed("q"):
+#         #     print("Motori fermati")
+#         #     picam2.stop()
+#         #     stop_event1.set()
 
 
 def setup_servo():
@@ -487,12 +478,6 @@ def test_servo(ang_min, ang_max):
     thread.join()
     thread2.join()
 
-
-# muovi_servo()
-# print("CI SIAMO")
-# manualSetAngle()
-# setAngle()
-# pwm.stop()
 
 opzione = 10
 while opzione != 0:

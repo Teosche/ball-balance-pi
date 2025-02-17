@@ -57,21 +57,29 @@ class Camera:
         module = math.sqrt((x - previous_x) ** 2 + (y - previous_y) ** 2)
         return round(module)
 
-    def get_position_information(self, frame):
+    def get_position_information(self, frame) -> tuple:
         """
         Process detected circles to annotate the frame, calculate speed, and update position.
 
         Args:
             frame (np.ndarray): The current frame on which circles are detected and annotated.
+
+        Returns:
+            tuple: The (x, y) coordinates of the detected ball (the first circle), or (None, None)
+                   if no circle is found.
         """
         self.circle = np.round(self.circle[0, :]).astype("int")
-
-        for x, y, r in self.circle:
+        if len(self.circle) > 0:
+            # Prendiamo il primo cerchio rilevato
+            x, y, r = self.circle[0]
             self.print_circle(frame, x, y, r)
             if self.previous_x is None or self.previous_y is None:
                 self.previous_x, self.previous_y = x, y
             self.speed = self.calculate_speed(x, y, self.previous_x, self.previous_y)
             self.previous_x, self.previous_y = x, y
+            return x, y
+        else:
+            return None, None
 
     def capture_frame(self) -> np.array:
         """
