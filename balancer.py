@@ -98,9 +98,6 @@ def inverse_kinematic(L1, L2, Xt, Yt):
     return round(math.degrees(theta_1))
 
 
-
-
-
 def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
     """
     Process camera feed and adjust servo motors based on PID control.
@@ -113,16 +110,12 @@ def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
     """
     prev_x, prev_y = None, None
 
-    while not stop_event.is_set():
-        frame = camera.capture_frame()
-        camera.detect_circle(frame)
-
-        if camera.circle is not None:
-            x, y = camera.get_position_information(frame)
-
+    if camera.circle is not None:
+        x, y = camera.get_position_information(frame)
+        if x is not None and y is not None:
+            # continua con il calcolo e il controllo
             if prev_x is None or prev_y is None:
                 prev_x, prev_y = x, y
-
             speed = camera.calculate_speed(x, y, prev_x, prev_y)
             prev_x, prev_y = x, y
 
@@ -144,8 +137,7 @@ def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
             servo.move_servos((theta_1, theta_2, theta_3))
 
             print(f"Ball position: (X: {x}, Y: {y}), Speed: {speed}")
-
         else:
-            print("No ball detected.")
+            print("No valid ball coordinates detected.")
 
-        time.sleep(0.05)
+            time.sleep(0.1)
