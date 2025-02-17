@@ -108,10 +108,10 @@ class Camera:
             cv2.HOUGH_GRADIENT,
             1.2,
             100000,
-            param1=100,
-            param2=30,
-            minRadius=2,
-            maxRadius=50,  # Prova a cambiarlo a 80 se necessario
+            param1=150,
+            param2=50,
+            minRadius=10,
+            maxRadius=25,
         )
         if self.circle is not None:
             print("Circles detected:", self.circle.shape)
