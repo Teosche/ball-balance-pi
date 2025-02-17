@@ -108,9 +108,9 @@ class Camera:
             cv2.HOUGH_GRADIENT,
             1.2,
             100000,
-            param1=150,
-            param2=150,
-            minRadius=10,
+            param1=100,
+            param2=50,
+            minRadius=20,
             maxRadius=40,
         )
         if self.circle is not None:
