@@ -110,34 +110,38 @@ def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
     """
     prev_x, prev_y = None, None
 
-    if camera.circle is not None:
-        x, y = camera.get_position_information(frame)
-        if x is not None and y is not None:
-            # continua con il calcolo e il controllo
-            if prev_x is None or prev_y is None:
+    while not stop_event.is_set():
+        frame = camera.capture_frame()
+        camera.detect_circle(frame)
+
+        if camera.circle is not None:
+            x, y = camera.get_position_information(frame)
+            if x is not None and y is not None:
+                # continua con il calcolo e il controllo
+                if prev_x is None or prev_y is None:
+                    prev_x, prev_y = x, y
+                speed = camera.calculate_speed(x, y, prev_x, prev_y)
                 prev_x, prev_y = x, y
-            speed = camera.calculate_speed(x, y, prev_x, prev_y)
-            prev_x, prev_y = x, y
 
-            control_signal = pid.update((x, y), 0.05)
-            target_x = linear_relation(-1, 1, -1, 1, control_signal[0], False)
-            target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
+                control_signal = pid.update((x, y), 0.05)
+                target_x = linear_relation(-1, 1, -1, 1, control_signal[0], False)
+                target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
 
-            h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
+                h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
 
-            theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
-            theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
-            theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
+                theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
+                theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
+                theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
 
-            minA, maxA = 15, 55
-            theta_1 = max(minA, min(theta_1, maxA))
-            theta_2 = max(minA, min(theta_2, maxA))
-            theta_3 = max(minA, min(theta_3, maxA))
+                minA, maxA = 15, 55
+                theta_1 = max(minA, min(theta_1, maxA))
+                theta_2 = max(minA, min(theta_2, maxA))
+                theta_3 = max(minA, min(theta_3, maxA))
 
-            servo.move_servos((theta_1, theta_2, theta_3))
+                servo.move_servos((theta_1, theta_2, theta_3))
 
-            print(f"Ball position: (X: {x}, Y: {y}), Speed: {speed}")
-        else:
-            print("No valid ball coordinates detected.")
+                print(f"Ball position: (X: {x}, Y: {y}), Speed: {speed}")
+            else:
+                print("No valid ball coordinates detected.")
 
-            time.sleep(0.1)
+        time.sleep(0.05)
