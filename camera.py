@@ -103,7 +103,6 @@ class Camera:
         blur_frame = cv2.GaussianBlur(
             cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (17, 17), 0
         )
-
         self.circle = cv2.HoughCircles(
             blur_frame,
             cv2.HOUGH_GRADIENT,
@@ -112,8 +111,12 @@ class Camera:
             param1=100,
             param2=30,
             minRadius=2,
-            maxRadius=25,
+            maxRadius=50,  # Prova a cambiarlo a 80 se necessario
         )
+        if self.circle is not None:
+            print("Circles detected:", self.circle.shape)
+        else:
+            print("No circles detected in detect_circle()")
 
     def print_circle(self, frame: np.array, x: int, y: int, r: int):
         """
