@@ -111,7 +111,7 @@ class Camera:
             param1=150,
             param2=50,
             minRadius=10,
-            maxRadius=25,
+            maxRadius=30,
         )
         if self.circle is not None:
             print("Circles detected:", self.circle.shape)
