@@ -109,7 +109,7 @@ class Camera:
             1.2,
             100000,
             param1=150,
-            param2=50,
+            param2=150,
             minRadius=10,
             maxRadius=40,
         )
