@@ -112,7 +112,7 @@ class Camera:
             param1=100,
             param2=30,
             minRadius=2,
-            maxRadius=20,
+            maxRadius=30,
         )
 
     def print_circle(self, frame: np.array, x: int, y: int, r: int):
