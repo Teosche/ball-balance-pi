@@ -101,23 +101,21 @@ def inverse_kinematic(L1, L2, Xt, Yt):
 def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
     """
     Process camera feed and adjust servo motors based on PID control.
-
-    Args:
-        stop_event (threading.Event): Event to stop the loop.
-        camera (Camera): Camera object.
-        pid (PID): PID controller.
-        servo (Servo): Servo controller.
+    If no ball is detected for a continuous period (e.g. 30 seconds),
+    the system resets the servo to the default setup position.
     """
     prev_x, prev_y = None, None
+    no_ball_counter = 0  # contatore per le iterazioni senza rilevamento
 
     while not stop_event.is_set():
         frame = camera.capture_frame()
         camera.detect_circle(frame)
 
         if camera.circle is not None:
-            x, y = camera.get_position_information(frame)
-            if x is not None and y is not None:
-                # continua con il calcolo e il controllo
+            pos = camera.get_position_information(frame)
+            if pos is not None:
+                x, y = pos
+                no_ball_counter = 0  # resetta il contatore se rilevi qualcosa
                 if prev_x is None or prev_y is None:
                     prev_x, prev_y = x, y
                 speed = camera.calculate_speed(x, y, prev_x, prev_y)
@@ -143,5 +141,17 @@ def vision(stop_event, camera: Camera, pid: PID, servo: Servo):
                 print(f"Ball position: (X: {x}, Y: {y}), Speed: {speed}")
             else:
                 print("No valid ball coordinates detected.")
+        else:
+            print("No ball detected.")
+            no_ball_counter += 1
 
-        time.sleep(0.05)
+            # Se per 30 secondi (ad es., 30/0.1 = 300 iterazioni) non si rileva la palla,
+            # resetta i servo
+            if no_ball_counter >= 300:
+                print(
+                    "No ball detected for 30 seconds, resetting servo to setup position."
+                )
+                setup_servo()
+                no_ball_counter = 0
+
+        time.sleep(0.1)
