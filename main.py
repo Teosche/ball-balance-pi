@@ -1,16 +1,16 @@
 import threading
 import pigpio
 
-from api import app
+from api import app, init_camera
 from camera import Camera
 from pid import PID
 from servo import Servo
 from balancer import vision
 
-
 if __name__ == "__main__":
     pi = pigpio.pi()
     camera = Camera()
+    init_camera(camera)  # Inizializza la variabile globale 'camera' in api.py
     pid = PID(kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0))
     servo = Servo(pi)
 
@@ -22,6 +22,5 @@ if __name__ == "__main__":
 
     threading.Thread(
         target=app.run,
-        args=(camera),
         kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
     ).start()
