@@ -13,7 +13,7 @@ SERVO_PIN1 = 23
 SERVO_PIN2 = 24
 
 lock = True
-lock1= True
+lock1 = True
 print("Caricamento...")
 pi = pigpio.pi()
 if not pi.connected:
@@ -23,16 +23,16 @@ angolo1 = 0
 angolo2 = 0
 angolo3 = 0
 
-#t tempo, refactored
+# t tempo, refactored
 t = 0.05
 
 dt = 0.05
 posizione_x = 0
 posizione_y = 0
 velocita = 0
-t1=30
-t2=31
-t3=28
+t1 = 30
+t2 = 31
+t3 = 28
 
 picam2 = Picamera2()
 camera_config = picam2.create_preview_configuration(main={"size": (240, 240)})
@@ -44,55 +44,57 @@ picam2.start()
 
 stop_event1 = threading.Event()
 
-# class PIDController:
-#     def __init__(self, kp, ki, kd, setpoint):
-#         """
-#         Inizializza il controllore PID per un sistema con coordinate x, y.
 
-#         :param kp: Guadagno proporzionale
-#         :param ki: Guadagno integrale
-#         :param kd: Guadagno derivativo
-#         :param setpoint: Coordinate desiderate del sistema (setpoint) come tupla (x, y)
-#         """
-#         self.kp = kp
-#         self.ki = ki
-#         self.kd = kd
-#         self.setpoint = setpoint
+class PIDController:
+    def __init__(self, kp, ki, kd, setpoint):
+        """
+        Inizializza il controllore PID per un sistema con coordinate x, y.
 
-#         self.previous_error = (0, 0)
-#         self.integral = (0, 0)
+        :param kp: Guadagno proporzionale
+        :param ki: Guadagno integrale
+        :param kd: Guadagno derivativo
+        :param setpoint: Coordinate desiderate del sistema (setpoint) come tupla (x, y)
+        """
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.setpoint = setpoint
 
-#     def update(self, feedback_value, dt):
-#         """
-#         Calcola l'output del PID per ogni coordinata.
+        self.previous_error = (0, 0)
+        self.integral = (0, 0)
 
-#         :param feedback_value: Coordinate misurate del sistema come tupla (x, y)
-#         :param dt: Intervallo di tempo (in secondi) dall'ultimo aggiornamento
-#         :return: Output del controllore PID come tupla (x, y)
-#         """
-#         error_x = self.setpoint[0] - feedback_value[0]
-#         error_y = self.setpoint[1] - feedback_value[1]
+    def update(self, feedback_value, dt):
+        """
+        Calcola l'output del PID per ogni coordinata.
 
-#         self.integral = (
-#             self.integral[0] + error_x * dt,
-#             self.integral[1] + error_y * dt,
-#         )
+        :param feedback_value: Coordinate misurate del sistema come tupla (x, y)
+        :param dt: Intervallo di tempo (in secondi) dall'ultimo aggiornamento
+        :return: Output del controllore PID come tupla (x, y)
+        """
+        error_x = self.setpoint[0] - feedback_value[0]
+        error_y = self.setpoint[1] - feedback_value[1]
 
-#         derivative_x = (error_x - self.previous_error[0]) / dt if dt > 0 else 0
-#         derivative_y = (error_y - self.previous_error[1]) / dt if dt > 0 else 0
+        self.integral = (
+            self.integral[0] + error_x * dt,
+            self.integral[1] + error_y * dt,
+        )
 
-#         # Calcolo dell'output
-#         output_x = (
-#             self.kp * error_x + self.ki * self.integral[0] + self.kd * derivative_x
-#         )
-#         output_y = (
-#             self.kp * error_y + self.ki * self.integral[1] + self.kd * derivative_y
-#         )
+        derivative_x = (error_x - self.previous_error[0]) / dt if dt > 0 else 0
+        derivative_y = (error_y - self.previous_error[1]) / dt if dt > 0 else 0
 
-#         # Aggiorna l'errore precedente
-#         self.previous_error = (error_x, error_y)
+        # Calcolo dell'output
+        output_x = (
+            self.kp * error_x + self.ki * self.integral[0] + self.kd * derivative_x
+        )
+        output_y = (
+            self.kp * error_y + self.ki * self.integral[1] + self.kd * derivative_y
+        )
 
-#         return output_x, output_y
+        # Aggiorna l'errore precedente
+        self.previous_error = (error_x, error_y)
+
+        return output_x, output_y
+
 
 def linear_relation(a1, b1, a2, b2, x1, third):
     result = 0
@@ -103,7 +105,8 @@ def linear_relation(a1, b1, a2, b2, x1, third):
     else:
         result = b2 - x2 + a2
     return result
-    
+
+
 def calcolo_altezze(raggio, PA, PB):
     # Coordinate di A e B
     A = PA  # Punto A (centro della piattaforma)
@@ -128,7 +131,7 @@ def calcolo_altezze(raggio, PA, PB):
     h1 = a * P1[0] + b * P1[1] + 14
     h2 = a * P2[0] + b * P2[1] + 14
     h3 = a * P3[0] + b * P3[1] + 14
-    
+
     if h1 >= 16:
         h1 = 16
     if h2 >= 16:
@@ -136,21 +139,20 @@ def calcolo_altezze(raggio, PA, PB):
     if h3 >= 16:
         h3 = 16
 
-    #print(f"Altezze dei tre punti:")
-    #print(f"h1 (P1): {h1:.2f}")
-    #print(f"h2 (P2): {h2:.2f}")
-    #print(f"h3 (P3): {h3:.2f}")
-    return h1,h2,h3
-    
+    # print(f"Altezze dei tre punti:")
+    # print(f"h1 (P1): {h1:.2f}")
+    # print(f"h2 (P2): {h2:.2f}")
+    # print(f"h3 (P3): {h3:.2f}")
+    return h1, h2, h3
+
+
 def inverse_kinematic(L1, L2, Xt, Yt):
-    v=(pow(Xt, 2) + pow(Yt, 2) - pow(L1, 2) - pow(L2, 2)) / (2 * L1 * L2)
-    if v>1:
-        v=1
-    if v<-1:
-        v=1
-    theta_2 = math.acos(
-       v
-    )
+    v = (pow(Xt, 2) + pow(Yt, 2) - pow(L1, 2) - pow(L2, 2)) / (2 * L1 * L2)
+    if v > 1:
+        v = 1
+    if v < -1:
+        v = 1
+    theta_2 = math.acos(v)
     theta_1 = math.atan2(Yt, Xt) - math.atan2(
         L2 * math.sin(theta_2), L1 + L2 * math.cos(theta_2)
     )
@@ -164,13 +166,15 @@ def vision(stop_event1):
         global t1
         global t2
         global t3
-        
-        pid = PIDController(kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0)) ################################
+
+        pid = PIDController(
+            kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0)
+        )  ################################
         lock = True
         lock1 = True
         posizione_x_prec = 10
         posizione_y_prec = 120
-       
+
         global velocita
         prevCircle = None
         dist = lambda x1, y1, x2, y2: (x1 - x2) ** 2 + (y1 - y2) ** 2
@@ -193,14 +197,16 @@ def vision(stop_event1):
 
             if circles is not None:
                 circles = np.round(circles[0, :]).astype("int")
-                
+
                 for x, y, r in circles:
                     cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
                     cv2.circle(frame, (x, y), 2, (0, 0, 255), 3)
                     posizione_x = round(x / 2)
-                    posizione_y = round(y / 2) #########################################################
-                    #print(f"Posizione: (X:{posizione_x}: Y:{posizione_y})")
-                    d=-10
+                    posizione_y = round(
+                        y / 2
+                    )  #########################################################
+                    print(f"Posizione: (X:{posizione_x}: Y:{posizione_y})")
+                    d = -10
                     posizione_x = linear_relation(15, 120, -6, 6, posizione_x, False)
                     posizione_y = linear_relation(15, 120, -6, 6, posizione_y, False)
                     raggio = math.sqrt(posizione_x**2 + posizione_y**2)
@@ -213,44 +219,43 @@ def vision(stop_event1):
                         posizione_y_prec = posizione_y
                         lock = False
 
-                    
                     mod = math.sqrt(
                         (posizione_x - posizione_x_prec) ** 2
                         + (posizione_y - posizione_y_prec) ** 2
                     )
                     velocita = round(mod, 1)
-                    posizione_x = round(posizione_x,1)
-                    posizione_y= round(posizione_y,1)
+                    posizione_x = round(posizione_x, 1)
+                    posizione_y = round(posizione_y, 1)
                     print(f"Posizione: (X:{posizione_x}: Y:{posizione_y})")
 
-                    posizione_x_prec = round(posizione_x,1)
-                    posizione_y_prec = round(posizione_y,1)
+                    posizione_x_prec = round(posizione_x, 1)
+                    posizione_y_prec = round(posizione_y, 1)
                     current_value = [posizione_x, posizione_y]
-                    
-                    
+
                     control_signal = pid.update(current_value, dt)
-                    c1 = linear_relation(-1,1,-1,1,control_signal[0],False)
-                    c2 = linear_relation(-1,1,-1,1,control_signal[1],False)
-                    c1 = round(c1,1)
-                    c2 = round(c2,1)
-                    
-                    #print("C1 = "+str(c1))
-                    #print("C2 = "+str(c2))
-                    h1, h2, h3 = calcolo_altezze(6, [0,0], [c1,c2])
-                    
-                   
-                    h1 = round(h1,1)
-                    h2 = round(h2,1)
-                    h3 = round(h3,1)
-                    #print(h1)
-                    #print(h2)
-                    #print(h3)
-                    
-                    theta_1 = 90-inverse_kinematic(6.5, 9, 0, h1)
-                    theta_2 = 90-inverse_kinematic(6.5, 9, 0, h2)
-                    theta_3 =90-inverse_kinematic(6.5, 9, 0, h3)
+                    c1 = linear_relation(-1, 1, -1, 1, control_signal[0], False)
+                    c2 = linear_relation(-1, 1, -1, 1, control_signal[1], False)
+                    c1 = round(c1, 1)
+                    c2 = round(c2, 1)
+
+                    print("C1 = " + str(c1))
+                    print("C2 = " + str(c2))
+
+                    h1, h2, h3 = calcolo_altezze(6, [0, 0], [c1, c2])
+
+                    h1 = round(h1, 1)
+                    h2 = round(h2, 1)
+                    h3 = round(h3, 1)
+
+                    print(h1)
+                    print(h2)
+                    print(h3)
+
+                    theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
+                    theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
+                    theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
                     minA = 15
-                    maxA = 55 ##########################
+                    maxA = 55  ##########################
                     if theta_1 > maxA:
                         theta_1 = maxA
                     if theta_1 < minA:
@@ -266,18 +271,16 @@ def vision(stop_event1):
                     t1 = theta_1
                     t2 = theta_2
                     t3 = theta_3
-                    
-                        
-                    #print("Theta1= "+str(t1))
-                    #print("Theta2= "+str(t2))
-                    #print("Theta3 = "+str(t3))
-                    #print(c1)
-                    #print(c2)
-                    
+
+                    print("Theta1= " + str(t1))
+                    print("Theta2= " + str(t2))
+                    print("Theta3 = " + str(t3))
+                    print(c1)
+                    print(c2)
+
                     time.sleep(t)
             else:
-               print("No sfera")
-                
+                print("No sfera")
 
     except KeyboardInterrupt:
         print("Interruzione")
@@ -323,18 +326,17 @@ def stopServo():
     print("Gestione motori terminata")
 
 
-
 def setAngle():
     try:
         while True:
-            #print("Aggiorno ")
+            # print("Aggiorno ")
             # angolo = input()
             # angolo = int(angolo)
             if velocita < 25000:
-                #print("Motore 1 = "+str(t1))
-                #print("Motore 2 = "+str(t2))
-                #print("Motore 3 = "+str(t3))
-                
+                # print("Motore 1 = "+str(t1))
+                # print("Motore 2 = "+str(t2))
+                # print("Motore 3 = "+str(t3))
+
                 pulse = 500 + ((t1) * 2000 / 180)
                 pi.set_servo_pulsewidth(SERVO_PIN, pulse)
                 pulse1 = 500 + ((t2) * 2000 / 180)
@@ -342,11 +344,11 @@ def setAngle():
                 pulse2 = 500 + ((t3) * 2000 / 180)
                 pi.set_servo_pulsewidth(SERVO_PIN2, pulse2)
                 # print(angolo)
-                time.sleep(t)####################################
-                #pi.set_servo_pulsewidth(SERVO_PIN, 0)
-                #pi.set_servo_pulsewidth(SERVO_PIN1, 0)
-                #pi.set_servo_pulsewidth(SERVO_PIN2, 0)
-                
+                time.sleep(t)  ####################################
+                # pi.set_servo_pulsewidth(SERVO_PIN, 0)
+                # pi.set_servo_pulsewidth(SERVO_PIN1, 0)
+                # pi.set_servo_pulsewidth(SERVO_PIN2, 0)
+
             #     if keyboard.is_pressed("q"):
             #         setup_servo()
             #         stopServo()
@@ -491,7 +493,7 @@ while opzione != 0:
     print(opzione)
     if opzione == 1:
         print("Opzione 1")
-        #thread = threading.Thread(target=genera_angolo, args=(stop_event1,))
+        # thread = threading.Thread(target=genera_angolo, args=(stop_event1,))
         thread1 = threading.Thread(target=vision, args=(stop_event1,))
         # thread.start()
         thread1.start()
