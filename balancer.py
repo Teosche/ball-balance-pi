@@ -164,7 +164,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
 
             # Calcola altezze in base alla direzione target.
-            h1, h2, h3 = calcolo_altezze(6, [-13, -4], [target_x, target_y])
+            h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
 
             # Calcola gli angoli dei servo tramite inverse kinematics.
             theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
@@ -177,9 +177,13 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             theta_2 = max(min_angle, min(theta_2, max_angle))
             theta_3 = max(min_angle, min(theta_3, max_angle))
 
+            print(theta_1)
+            print(theta_2)
+            print(theta_3)
+
             # Per un sistema a delta, potresti dover applicare una logica simmetrica.
             # Qui, per semplicità, usiamo theta_1 e theta_2 per due servo e ripetiamo theta_1 per il terzo.
-            servo.move_servos((theta_1, theta_2, theta_1))
+            servo.move_servos((theta_1, theta_2, theta_3))
         else:
             print("No ball detected. Resetting servo to default position.")
             servo.reset_servo()
