@@ -120,7 +120,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
         pid (PID): PID controller with setpoint (0, 0).
         servo (Servo): Servo controller.
     """
-    dt = 0.05  # time step in seconds
+    dt = 0.04  # time step in seconds
 
     while not stop_event.is_set():
         # Capture a frame and detect circle(s)
