@@ -5,7 +5,7 @@ from api import app, init_camera
 from camera import Camera
 from pid import PID
 from servo import Servo
-from balancer import vision
+from balancer import balance_ball
 
 if __name__ == "__main__":
     pi = pigpio.pi()
@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     stop_event = threading.Event()
     vision_thread = threading.Thread(
-        target=vision, args=(stop_event, camera, pid, servo)
+        target=balance_ball, args=(stop_event, camera, pid, servo)
     )
     vision_thread.start()
 
