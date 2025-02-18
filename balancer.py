@@ -137,9 +137,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             # Transform raw coordinates:
             pos_x = round(x_raw / 2)
             pos_y = round(y_raw / 2)
-            offset_x, offset_y = 13.8, 3.2
-            pos_x = pos_x + offset_x
-            pos_y = pos_y + offset_y
+
             # Applica la mappatura lineare per adattare il range
             pos_x = linear_relation(15, 120, -6, 6, pos_x, False)
             pos_y = linear_relation(15, 120, -6, 6, pos_y, False)
@@ -149,6 +147,10 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             angolo_totale = angolo_attuale + math.radians(-10)
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
+
+            offset_x, offset_y = 13.8, 3.2
+            pos_x = pos_x + offset_x
+            pos_y = pos_y + offset_y
 
             # Qui il feedback per il PID è la posizione trasformata;
             # Se la pallina è al centro, si assume che (pos_x, pos_y) sia (0,0).
