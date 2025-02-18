@@ -137,6 +137,9 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             # Transform raw coordinates:
             pos_x = round(x_raw / 2)
             pos_y = round(y_raw / 2)
+            offset_x, offset_y = 13.8, 3.2
+            pos_x = pos_x + offset_x
+            pos_y = pos_y + offset_y
             # Applica la mappatura lineare per adattare il range
             pos_x = linear_relation(15, 120, -6, 6, pos_x, False)
             pos_y = linear_relation(15, 120, -6, 6, pos_y, False)
@@ -159,7 +162,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
 
             # Calcola altezze in base alla direzione target.
-            h1, h2, h3 = calcolo_altezze(6, [-12, -4], [target_x, target_y])
+            h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
 
             # Calcola gli angoli dei servo tramite inverse kinematics.
             theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
