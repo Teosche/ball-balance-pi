@@ -190,8 +190,8 @@ def vision(stop_event1):
                 100000,
                 param1=100,
                 param2=30,
-                minRadius=20,
-                maxRadius=80,
+                minRadius=50,
+                maxRadius=60,
             )
 
             if circles is not None:
