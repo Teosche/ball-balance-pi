@@ -164,7 +164,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
 
             # Calcola altezze in base alla direzione target.
-            h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
+            h1, h2, h3 = calcolo_altezze(6, [-13, -4], [target_x, target_y])
 
             # Calcola gli angoli dei servo tramite inverse kinematics.
             theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
