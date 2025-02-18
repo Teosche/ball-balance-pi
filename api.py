@@ -1,9 +1,10 @@
 from flask import Flask, Response
 
+
 app = Flask(__name__)
 
 
-def generate_frames():
+def generate_frames(camera):
     """
     Generate captured frame.
     """
