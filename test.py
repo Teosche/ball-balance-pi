@@ -23,9 +23,8 @@ angolo1 = 0
 angolo2 = 0
 angolo3 = 0
 
-# t tempo, refactored
-t = 0.05
 
+t = 0.05
 dt = 0.05
 posizione_x = 0
 posizione_y = 0
@@ -205,7 +204,7 @@ def vision(stop_event1):
                     posizione_y = round(
                         y / 2
                     )  #########################################################
-                    print(f"Posizione: (X:{posizione_x}: Y:{posizione_y})")
+                    # print(f"Posizione: (X:{posizione_x}: Y:{posizione_y})")
                     d = -10
                     posizione_x = linear_relation(15, 120, -6, 6, posizione_x, False)
                     posizione_y = linear_relation(15, 120, -6, 6, posizione_y, False)
@@ -238,18 +237,16 @@ def vision(stop_event1):
                     c1 = round(c1, 1)
                     c2 = round(c2, 1)
 
-                    print("C1 = " + str(c1))
-                    print("C2 = " + str(c2))
-
+                    # print("C1 = "+str(c1))
+                    # print("C2 = "+str(c2))
                     h1, h2, h3 = calcolo_altezze(6, [0, 0], [c1, c2])
 
                     h1 = round(h1, 1)
                     h2 = round(h2, 1)
                     h3 = round(h3, 1)
-
-                    print(h1)
-                    print(h2)
-                    print(h3)
+                    # print(h1)
+                    # print(h2)
+                    # print(h3)
 
                     theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
                     theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
@@ -272,15 +269,24 @@ def vision(stop_event1):
                     t2 = theta_2
                     t3 = theta_3
 
-                    print("Theta1= " + str(t1))
-                    print("Theta2= " + str(t2))
-                    print("Theta3 = " + str(t3))
-                    print(c1)
-                    print(c2)
+                    # print("Theta1= "+str(t1))
+                    # print("Theta2= "+str(t2))
+                    # print("Theta3 = "+str(t3))
+                    # print(c1)
+                    # print(c2)
 
                     time.sleep(t)
             else:
                 print("No sfera")
+
+    # Mostra il frame in una finestra
+    # cv2.imshow('Raspbian Camera Stream', frame)
+
+    # Esci dal ciclo se si preme il tasto 'q'
+    # if keyboard.is_pressed('q'):
+    #   print('Visione terminata')
+    #   picam2.stop()
+    #   stop_event1.set()
 
     except KeyboardInterrupt:
         print("Interruzione")
@@ -289,23 +295,23 @@ def vision(stop_event1):
         picam2.stop()
 
 
-# def genera_angolo(stop_event1):
-#     global angolo1
-#     global angolo2
-#     global angolo3
-#     global lock
-#     while not stop_event1.is_set():
-#         angolo1 = randint(0, 180)
-#         angolo2 = randint(0, 180)
-#         angolo3 = randint(0, 180)
-#         # print("Angolo 1 = "+str(angolo1))
-#         # print("Angolo 2 = "+str(angolo2))
-#         # print("Angolo 3 = "+str(angolo3))
-#         time.sleep(0.1)
-#         # if keyboard.is_pressed("q"):
-#         #     print("Motori fermati")
-#         #     picam2.stop()
-#         #     stop_event1.set()
+def genera_angolo(stop_event1):
+    global angolo1
+    global angolo2
+    global angolo3
+    global lock
+    while not stop_event1.is_set():
+        angolo1 = randint(0, 180)
+        angolo2 = randint(0, 180)
+        angolo3 = randint(0, 180)
+        # print("Angolo 1 = "+str(angolo1))
+        # print("Angolo 2 = "+str(angolo2))
+        # print("Angolo 3 = "+str(angolo3))
+        time.sleep(0.1)
+        # if keyboard.is_pressed("q"):
+        #     print("Motori fermati")
+        #     picam2.stop()
+        #     stop_event1.set()
 
 
 def setup_servo():
@@ -480,6 +486,12 @@ def test_servo(ang_min, ang_max):
     thread.join()
     thread2.join()
 
+
+# muovi_servo()
+# print("CI SIAMO")
+# manualSetAngle()
+# setAngle()
+# pwm.stop()
 
 opzione = 10
 while opzione != 0:
