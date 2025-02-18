@@ -172,7 +172,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
 
             # Limita gli angoli a un range operativo.
-            min_angle, max_angle = 5, 30
+            min_angle, max_angle = 5, 35
             theta_1 = max(min_angle, min(theta_1, max_angle))
             theta_2 = max(min_angle, min(theta_2, max_angle))
             theta_3 = max(min_angle, min(theta_3, max_angle))
