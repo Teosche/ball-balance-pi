@@ -100,67 +100,55 @@ def inverse_kinematic(L1, L2, Xt, Yt):
 
 def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
     """
-    Uses the camera feedback to keep the ball centered on the platform.
-    If no ball is detected, resets the servo to the default (setup) position.
+    Use camera feedback to level the plate and center the ball.
+
+    The image center is defined as (360, 240). The PID controller is set to bring the
+    error (ball position minus image center) to (0, 0). If no ball is detected,
+    the servos are reset to the default setup position.
 
     Args:
         stop_event (threading.Event): Event to stop the loop.
-        camera (Camera): The camera instance.
-        pid (PID): The PID controller.
-        servo (Servo): The servo controller.
+        camera (Camera): The camera object.
+        pid (PID): PID controller with setpoint (0, 0).
+        servo (Servo): Servo controller.
     """
     dt = 0.05  # time step in seconds
-    # Define the setpoint as the center of the image.
-    # Adjust these values based on your camera's resolution.
-    image_center = (320, 240)
+    image_center = (360, 240)
 
     while not stop_event.is_set():
-        # Capture a frame and detect the ball.
         frame = camera.capture_frame()
         camera.detect_circle(frame)
 
-        # Se viene rilevata una pallina...
-        if camera.circle is not None:
-            pos = camera.get_position_information(frame)
-            if pos is not None:
-                ball_x, ball_y = pos
-                # Calcola l'errore come differenza dal centro dell'immagine.
-                error_x = image_center[0] - ball_x
-                error_y = image_center[1] - ball_y
-                # Passa l'errore al PID (qui il feedback è l'errore, oppure puoi impostare il setpoint direttamente)
-                control_signal = pid.update((ball_x, ball_y), dt)
+        pos = camera.get_position_information(frame)
+        if pos is not None:
+            ball_x, ball_y = pos
+            # Compute error relative to the center: positive error means ball is to the right/bottom.
+            error_x = ball_x - image_center[0]
+            error_y = ball_y - image_center[1]
+            print(f"Ball: ({ball_x}, {ball_y}), Error: ({error_x}, {error_y})")
 
-                # Mappa il segnale di controllo agli angoli dei servo.
-                # NOTA: questa parte dipende dalla cinematica del tuo sistema.
-                # Qui ipotizziamo che il segnale PID venga mappato linearmente a un range di angoli.
-                min_angle, max_angle = 15, 55
-                # Per esempio, si può usare linear_relation per ottenere valori coerenti.
-                theta_x = linear_relation(
-                    -abs(image_center[0]),
-                    abs(image_center[0]),
-                    min_angle,
-                    max_angle,
-                    control_signal[0],
-                    False,
-                )
-                theta_y = linear_relation(
-                    -abs(image_center[1]),
-                    abs(image_center[1]),
-                    min_angle,
-                    max_angle,
-                    control_signal[1],
-                    False,
-                )
-                # Ipotizziamo una mappatura identica per tutti i servo, oppure potresti avere un inverse kinematics specifico.
-                servo.move_servos((theta_x, theta_y, theta_x))
-                print(
-                    f"Ball: ({ball_x}, {ball_y}), Error: ({error_x}, {error_y}), PID: ({control_signal[0]:.2f}, {control_signal[1]:.2f})"
-                )
-            else:
-                print("Ball detected but invalid coordinates.")
+            # Update PID using the error, with desired setpoint = (0, 0)
+            control_signal = pid.update((error_x, error_y), dt)
+            print(f"PID output: ({control_signal[0]:.2f}, {control_signal[1]:.2f})")
+
+            # Map the PID output to servo angles.
+            # Qui assumiamo una mappatura lineare: partiamo da un angolo di base (es. 30°)
+            # e aggiungiamo una correzione proporzionale al segnale PID.
+            # (La scala va calibrare in base al tuo sistema.)
+            base_angle = 30
+            scale = 0.5  # fattore di scala da regolare empiricamente
+            theta_x = base_angle + control_signal[0] * scale
+            theta_y = base_angle + control_signal[1] * scale
+
+            # Per un sistema a delta potresti voler applicare una logica simmetrica;
+            # qui per semplicità usiamo theta_x e theta_y per due dei servo e ripetiamo theta_x per il terzo.
+            min_angle, max_angle = 15, 55
+            theta_x = max(min_angle, min(theta_x, max_angle))
+            theta_y = max(min_angle, min(theta_y, max_angle))
+
+            servo.move_servos((theta_x, theta_y, theta_x))
         else:
-            print("No ball detected. Resetting servo.")
-            # Se non viene rilevata la pallina, resetta i servo alla posizione di setup.
+            print("No ball detected. Resetting servo to default.")
             servo.reset_servo()
 
         time.sleep(dt)
