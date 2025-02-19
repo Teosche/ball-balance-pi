@@ -117,7 +117,9 @@ def smooth_servo_movement(theta_1, theta_2, theta_3):
 
 def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
     dt = 0.04  # Tempo di aggiornamento più veloce
-
+    previous_theta_1 = 30
+    previous_theta_2 = 30
+    previous_theta_3 = 30
     while not stop_event.is_set():
         frame = camera.capture_frame()
         camera.detect_circle(frame)
@@ -156,15 +158,21 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
             theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
 
-            min_angle, max_angle = 20, 50
-            theta_1 = max(min_angle, min(theta_1, max_angle))
-            theta_2 = max(min_angle, min(theta_2, max_angle))
-            theta_3 = max(min_angle, min(theta_3, max_angle))
+            max_step = 1.5  # Gradi massimi di variazione per ciclo
 
-            # Applichiamo la media mobile più leggera
-            theta_1, theta_2, theta_3 = smooth_servo_movement(theta_1, theta_2, theta_3)
+            theta_1 = max(
+                previous_theta_1 - max_step, min(previous_theta_1 + max_step, theta_1)
+            )
+            theta_2 = max(
+                previous_theta_2 - max_step, min(previous_theta_2 + max_step, theta_2)
+            )
+            theta_3 = max(
+                previous_theta_3 - max_step, min(previous_theta_3 + max_step, theta_3)
+            )
 
-            print(f"Servo Angles: θ1={theta_1:.2f}, θ2={theta_2:.2f}, θ3={theta_3:.2f}")
+            previous_theta_1 = theta_1
+            previous_theta_2 = theta_2
+            previous_theta_3 = theta_3
 
             servo.move_servos((theta_1, theta_2, theta_3))
         else:
