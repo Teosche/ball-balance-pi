@@ -99,7 +99,7 @@ def inverse_kinematic(L1, L2, Xt, Yt):
 
 
 def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
-    dt = 0.03  # Time step in seconds
+    dt = 0.05  # Tempo di risposta più alto per maggiore stabilità
 
     while not stop_event.is_set():
         frame = camera.capture_frame()
@@ -112,55 +112,47 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = round(x_raw / 2)
             pos_y = round(y_raw / 2)
 
-            # Applichiamo la mappatura lineare per adattare il range
+            # Mappiamo le coordinate
             pos_x = linear_relation(15, 120, -6, 6, pos_x, False)
             pos_y = linear_relation(15, 120, -6, 6, pos_y, False)
 
-            # Calcoliamo la distanza e ruotiamo le coordinate di -10°
+            # Rotazione per allineare il sistema di riferimento
             raggio = math.sqrt(pos_x**2 + pos_y**2)
             angolo_attuale = math.atan2(pos_y, pos_x)
             angolo_totale = angolo_attuale + math.radians(-10)
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
-            # DEBUG: Stampiamo le coordinate prima dell'offset
-            print(f"Ball (before offset): ({pos_x:.2f}, {pos_y:.2f})")
-
-            # Correggiamo con l'offset (da verificare se serve)
+            # Offset per correggere il centro
             offset_x, offset_y = 13.8, 3.2
             pos_x = pos_x + offset_x
             pos_y = pos_y + offset_y
 
-            # DEBUG: Stampiamo le coordinate dopo l'offset
-            print(f"Ball (after offset): ({pos_x:.2f}, {pos_y:.2f})")
-
+            # Applichiamo il PID con i nuovi parametri
             control_signal = pid.update((pos_x, pos_y), dt)
             print(f"PID Output: ({control_signal[0]:.2f}, {control_signal[1]:.2f})")
 
-            # Convertiamo il segnale PID in movimenti effettivi
+            # Mappiamo il segnale PID nei movimenti dei servo
             target_x = linear_relation(-1, 1, -1, 1, control_signal[0], False)
             target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
 
-            # Calcoliamo le altezze
+            # Calcoliamo le altezze in base alla nuova posizione target
             h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
 
-            # DEBUG: Stampiamo le altezze calcolate
-            print(f"Heights: h1={h1:.2f}, h2={h2:.2f}, h3={h3:.2f}")
-
-            # Calcoliamo gli angoli con la cinematica inversa
+            # Cinematica inversa
             theta_1 = 90 - inverse_kinematic(6.5, 9, 0, h1)
             theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
             theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
 
-            # Limitiamo gli angoli
-            min_angle, max_angle = 15, 55
+            # Limitiamo gli angoli per evitare movimenti eccessivi
+            min_angle, max_angle = 20, 50
             theta_1 = max(min_angle, min(theta_1, max_angle))
             theta_2 = max(min_angle, min(theta_2, max_angle))
             theta_3 = max(min_angle, min(theta_3, max_angle))
 
-            # DEBUG: Stampiamo gli angoli finali
             print(f"Servo Angles: θ1={theta_1:.2f}, θ2={theta_2:.2f}, θ3={theta_3:.2f}")
 
+            # Muoviamo i servo
             servo.move_servos((theta_1, theta_2, theta_3))
         else:
             print("No ball detected. Resetting servo to default position.")
