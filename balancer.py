@@ -100,13 +100,13 @@ def inverse_kinematic(L1, L2, Xt, Yt):
     return round(math.degrees(theta_1))
 
 
-# Creiamo una media mobile per rendere i movimenti dei servo più fluidi
-servo_history = collections.deque(maxlen=5)  # Salviamo gli ultimi 5 angoli dei servo
+servo_history = collections.deque(maxlen=3)  # Ultimi 3 movimenti
 
 
 def smooth_servo_movement(theta_1, theta_2, theta_3):
     """
-    Applica una media mobile per rendere più fluidi i movimenti dei servo.
+    Applica una media mobile leggera per rendere fluidi i movimenti dei servo,
+    ma senza renderli troppo lenti.
     """
     servo_history.append((theta_1, theta_2, theta_3))
     avg_theta_1 = sum(t[0] for t in servo_history) / len(servo_history)
@@ -116,7 +116,7 @@ def smooth_servo_movement(theta_1, theta_2, theta_3):
 
 
 def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
-    dt = 0.06  # Tempo di risposta aumentato
+    dt = 0.04  # Tempo di aggiornamento più veloce
 
     while not stop_event.is_set():
         frame = camera.capture_frame()
@@ -161,7 +161,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             theta_2 = max(min_angle, min(theta_2, max_angle))
             theta_3 = max(min_angle, min(theta_3, max_angle))
 
-            # Rendiamo i movimenti più fluidi applicando una media mobile
+            # Applichiamo la media mobile più leggera
             theta_1, theta_2, theta_3 = smooth_servo_movement(theta_1, theta_2, theta_3)
 
             print(f"Servo Angles: θ1={theta_1:.2f}, θ2={theta_2:.2f}, θ3={theta_3:.2f}")
