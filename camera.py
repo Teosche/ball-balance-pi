@@ -72,8 +72,7 @@ class Camera:
         self.circle = np.round(self.circle[0, :]).astype("int")
         if len(self.circle) > 0:
             # Prendiamo il primo cerchio rilevato
-            x, y, r = self.circle[0]
-            self.print_circle(frame, x, y, r)
+            x, y = self.circle[0]
             if self.previous_x is None or self.previous_y is None:
                 self.previous_x, self.previous_y = x, y
             self.speed = self.calculate_speed(x, y, self.previous_x, self.previous_y)

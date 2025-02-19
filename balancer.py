@@ -132,7 +132,6 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             circles = np.round(camera.circle[0, :]).astype("int")
             x_raw, y_raw, r = circles[0]
             # Draw circle on frame (for debugging/overlay)
-            camera.print_circle(frame, x_raw, y_raw, r)
 
             # Transform raw coordinates:
             pos_x = round(x_raw / 2)

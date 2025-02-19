@@ -168,7 +168,7 @@ def vision(stop_event1):
 
         pid = PIDController(
             kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0)
-        )  ################################
+        )
         lock = True
         lock1 = True
         posizione_x_prec = 10
