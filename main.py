@@ -11,7 +11,7 @@ if __name__ == "__main__":
     pi = pigpio.pi()
     camera = Camera()
     init_camera(camera)  # Inizializza la variabile globale 'camera' in api.py
-    pid = PID(kp=0.03, ki=0.0025, kd=0.025, setpoint=(0, 0))
+    pid = PID(kp=0.035, ki=0.002, kd=0.035, setpoint=(0, 0))
     servo = Servo(pi)
 
     stop_event = threading.Event()
