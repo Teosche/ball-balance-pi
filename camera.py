@@ -68,6 +68,7 @@ class Camera:
             tuple: The (x, y) coordinates of the detected ball (the first circle), or (None, None)
                    if no circle is found.
         """
+
         self.circle = np.round(self.circle[0, :]).astype("int")
         if len(self.circle) > 0:
             # Prendiamo il primo cerchio rilevato
@@ -112,18 +113,5 @@ class Camera:
             param1=100,
             param2=30,
             minRadius=50,
-            maxRadius=60,
+            maxRadius=80,
         )
-
-    def print_circle(self, frame: np.array, x: int, y: int, r: int):
-        """
-        Draw a circle and a center point over the detected object.
-
-        Args:
-            frame (np.array): The frame to draw on.
-            x (int): The x-coordinate of the circle's center.
-            y (int): The y-coordinate of the circle's center.
-            r (int): The radius of the circle.
-        """
-        cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
-        cv2.circle(frame, (x, y), 2, (0, 0, 255), 3)
