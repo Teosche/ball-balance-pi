@@ -21,7 +21,7 @@ if __name__ == "__main__":
     )
     vision_thread.start()
 
-    threading.Thread(
-        target=app.run,
-        kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
-    ).start()
+    # threading.Thread(
+    #     target=app.run,
+    #     kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
+    # ).start()
