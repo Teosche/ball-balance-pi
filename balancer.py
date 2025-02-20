@@ -116,7 +116,7 @@ def smooth_servo_movement(theta_1, theta_2, theta_3):
 
 
 def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
-    dt = 0.025
+    dt = 0.022
     previous_theta_1 = 30
     previous_theta_2 = 30
     previous_theta_3 = 30
@@ -140,7 +140,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
-            offset_x, offset_y = 13, 3
+            offset_x, offset_y = 13.2, 3.2
             pos_x = pos_x + offset_x
             pos_y = pos_y + offset_y
 
