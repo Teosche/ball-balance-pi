@@ -24,9 +24,8 @@ class PID:
 
         self.previous_error = (0, 0)
         self.integral = (0, 0)
-        self.previous_derivative = (0, 0)  # For derivative filtering
-        self.dt_min = 0.01  # Minimum dt to prevent division errors
-        self.max_integral = 10  # Anti-windup limit
+        self.previous_derivative = (0, 0)
+        self.max_integral = 8
 
     def update(self, feedback_value: tuple, dt: float) -> tuple:
         """
@@ -39,8 +38,6 @@ class PID:
         Returns:
             tuple: PID control output (x, y) as floats.
         """
-        dt = max(dt, self.dt_min)
-
         error_x = self.setpoint[0] - feedback_value[0]
         error_y = self.setpoint[1] - feedback_value[1]
 
