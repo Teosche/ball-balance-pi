@@ -11,7 +11,7 @@ if __name__ == "__main__":
     pi = pigpio.pi()
     camera = Camera()
     init_camera(camera)
-    pid = PID(kp=0.015, ki=0.002, kd=0.01, setpoint=(0, 0))
+    pid = PID(kp=0.01, ki=0.0012, kd=0.01, setpoint=(0, 0))
 
     servo = Servo(pi)
 
