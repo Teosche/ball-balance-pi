@@ -100,9 +100,9 @@ class Camera:
         Args:
             frame (np.array): The frame in which circles are to be detected.
         """
-        blur_frame = cv2.GaussianBlur(
-            cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (17, 17), 0
-        )
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray_eq = cv2.equalizeHist(gray)
+        blur_frame = cv2.GaussianBlur(gray_eq, (17, 17), 0)
 
         self.circle = cv2.HoughCircles(
             blur_frame,
@@ -110,7 +110,7 @@ class Camera:
             1.2,
             100000,
             param1=100,
-            param2=30,
+            param2=40,
             minRadius=50,
             maxRadius=80,
         )
