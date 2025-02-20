@@ -10,8 +10,8 @@ from balancer import balance_ball
 if __name__ == "__main__":
     pi = pigpio.pi()
     camera = Camera()
-    init_camera(camera)  # Inizializza la variabile globale 'camera' in api.py
-    pid = PID(kp=0.02, ki=0.002, kd=0.01, setpoint=(0, 0))
+    init_camera(camera)
+    pid = PID(kp=0.022, ki=0.0025, kd=0.01, setpoint=(0, 0))
 
     servo = Servo(pi)
 
