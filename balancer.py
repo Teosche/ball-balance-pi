@@ -42,57 +42,68 @@ def linear_relation(a1, b1, a2, b2, x1, third):
 
 def calcolo_altezze(radius, PA, PB):
     """
-    Calculate A, B coordinates, where A is the center of the board and B is the target direction
+    Calculate A, B coordinates, where A is the center of the board and B is the target direction.
 
     Args:
+        radius: The radius of the platform.
+        PA: Coordinates of point A (center of the platform).
+        PB: Coordinates of point B (target direction).
 
-    radius:
-    PA:
-    PB:
+    Returns:
+        A tuple (h1, h2, h3) with the calculated heights at three points on the edge.
     """
-    # Coordinate di A e B
-    A = PA  # Punto A (centro della piattaforma)
-    B = PB  # Punto B (direzione desiderata)
+    A = PA  # Center of the platform
+    B = PB  # Desired target direction
+    offset = 15
 
-    # radius
     R = radius
 
-    # Coordinate dei tre punti sul bordo
+    # Coordinates of the three points on the platform edge
     P1 = (-R, 0)
     P3 = (R / 2, np.sqrt(3) * -R / 2)
     P2 = (R / 2, -np.sqrt(3) * -R / 2)
 
-    # Direzione desiderata (A -> B)
+    # Desired direction (from A to B)
     d = (B[0] - A[0], B[1] - A[1])
 
-    # Calcolo del piano (coefficenti a, b)
+    # Compute coefficients for the plane equation
     a = d[0] / R
     b = d[1] / R
 
-    # Calcolo delle altezze
-    h1 = a * P1[0] + b * P1[1] + 14
-    h2 = a * P2[0] + b * P2[1] + 14
-    h3 = a * P3[0] + b * P3[1] + 14
+    # Calculate heights (with an offset of 14)
+    h1 = a * P1[0] + b * P1[1] + offset
+    h2 = a * P2[0] + b * P2[1] + offset
+    h3 = a * P3[0] + b * P3[1] + offset
 
-    if h1 >= 16:
-        h1 = 16
-    if h2 >= 16:
-        h2 = 16
-    if h3 >= 16:
-        h3 = 16
+    # Saturate heights at 16
+    if h1 >= 17:
+        h1 = 17
+    if h2 >= 17:
+        h2 = 17
+    if h3 >= 17:
+        h3 = 17
 
     return h1, h2, h3
 
 
 def inverse_kinematic(L1, L2, Xt, Yt):
     """
-    Calculate the inverse kinematic function
+    Calculate the inverse kinematic function for a 2-link manipulator.
+
+    Args:
+        L1: Length of the first link.
+        L2: Length of the second link.
+        Xt: Target x-coordinate.
+        Yt: Target y-coordinate.
+
+    Returns:
+        The computed angle (in degrees) for the first joint.
     """
-    v = (pow(Xt, 2) + pow(Yt, 2) - pow(L1, 2) - pow(L2, 2)) / (2 * L1 * L2)
+    v = (Xt**2 + Yt**2 - L1**2 - L2**2) / (2 * L1 * L2)
     if v > 1:
         v = 1
     if v < -1:
-        v = 1
+        v = -1  # Correzione: se v < -1, va clippato a -1, non a 1.
     theta_2 = math.acos(v)
     theta_1 = math.atan2(Yt, Xt) - math.atan2(
         L2 * math.sin(theta_2), L1 + L2 * math.cos(theta_2)
