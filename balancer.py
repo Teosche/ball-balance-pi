@@ -54,7 +54,7 @@ def calcolo_altezze(radius, PA, PB):
     """
     A = PA  # Center of the platform
     B = PB  # Desired target direction
-    offset = 15
+    offset = 13.5
 
     R = radius
 
@@ -76,12 +76,12 @@ def calcolo_altezze(radius, PA, PB):
     h3 = a * P3[0] + b * P3[1] + offset
 
     # Saturate heights at 16
-    if h1 >= 15:
-        h1 = 15
-    if h2 >= 15:
-        h2 = 15
-    if h3 >= 15:
-        h3 = 15
+    if h1 >= 17:
+        h1 = 17
+    if h2 >= 17:
+        h2 = 17
+    if h3 >= 17:
+        h3 = 17
 
     return h1, h2, h3
 
