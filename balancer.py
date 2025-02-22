@@ -151,7 +151,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
-            offset_x, offset_y = 13.2, 3.2
+            offset_x, offset_y = 0, 0
             pos_x = pos_x + offset_x
             pos_y = pos_y + offset_y
 
