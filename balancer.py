@@ -151,14 +151,13 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
-            offset_x, offset_y = 0, 0
+            offset_x, offset_y = 13.2, 3.2
             pos_x = round(pos_x + offset_x)
             pos_y = round(pos_y + offset_y)
 
             control_signal = pid.update((pos_x, pos_y), dt)
             print(f"PID Output: ({control_signal[0]:.2f}, {control_signal[1]:.2f})")
 
-            # Mappiamo il segnale PID nei movimenti dei servo
             target_x = linear_relation(-1, 1, -1, 1, control_signal[0], False)
             target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
 
@@ -168,7 +167,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
             theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
 
-            max_step = 1.5  # Gradi massimi di variazione per ciclo
+            max_step = 2.5
 
             theta_1 = max(
                 previous_theta_1 - max_step, min(previous_theta_1 + max_step, theta_1)
