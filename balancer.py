@@ -155,8 +155,8 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             print("POS Y vefore offset", pos_y)
 
             offset_x, offset_y = 13.2, 3.2
-            pos_x = round(pos_x + offset_x)
-            pos_y = round(pos_y + offset_y)
+            pos_x = round(pos_x + offset_x, 1)
+            pos_y = round(pos_y + offset_y, 1)
 
             print("POS X", pos_x)
             print("POS Y", pos_y)
