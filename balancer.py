@@ -54,7 +54,7 @@ def calcolo_altezze(radius, PA, PB):
     """
     A = PA  # Center of the platform
     B = PB  # Desired target direction
-    offset = 13.5
+    offset = 14
 
     R = radius
 
@@ -76,12 +76,12 @@ def calcolo_altezze(radius, PA, PB):
     h3 = a * P3[0] + b * P3[1] + offset
 
     # Saturate heights at 16
-    if h1 >= 17:
-        h1 = 17
-    if h2 >= 17:
-        h2 = 17
-    if h3 >= 17:
-        h3 = 17
+    if h1 >= 16:
+        h1 = 16
+    if h2 >= 16:
+        h2 = 16
+    if h3 >= 16:
+        h3 = 16
 
     return h1, h2, h3
 
@@ -151,7 +151,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
-            offset_x, offset_y = 0, 0
+            offset_x, offset_y = 13.2, 3.2
             pos_x = pos_x + offset_x
             pos_y = pos_y + offset_y
 
