@@ -1,4 +1,27 @@
-from api import app
+import threading
+import pigpio
+
+from api import app, init_camera
+from camera import Camera
+from pid import PID
+from servo import Servo
+from balancer import balance_ball
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    pi = pigpio.pi()
+    camera = Camera()
+    init_camera(camera)
+    pid = PID(kp=0.028, ki=0.002, kd=0.015, setpoint=(0, 0))
+
+    servo = Servo(pi)
+
+    stop_event = threading.Event()
+    vision_thread = threading.Thread(
+        target=balance_ball, args=(stop_event, camera, pid, servo)
+    )
+    vision_thread.start()
+
+    # threading.Thread(
+    #     target=app.run,
+    #     kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
+    # ).start()
