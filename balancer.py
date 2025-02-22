@@ -151,15 +151,24 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
+            print("POS X before offset", pos_x)
+            print("POS Y vefore offset", pos_y)
+
             offset_x, offset_y = 13.2, 3.2
             pos_x = round(pos_x + offset_x)
             pos_y = round(pos_y + offset_y)
+
+            print("POS X", pos_x)
+            print("POS Y", pos_y)
 
             control_signal = pid.update((pos_x, pos_y), dt)
             print(f"PID Output: ({control_signal[0]:.2f}, {control_signal[1]:.2f})")
 
             target_x = linear_relation(-1, 1, -1, 1, control_signal[0], False)
             target_y = linear_relation(-1, 1, -1, 1, control_signal[1], False)
+
+            print("TARGET X", target_x)
+            print("TARGET Y", target_y)
 
             h1, h2, h3 = calcolo_altezze(6, [0, 0], [target_x, target_y])
 
