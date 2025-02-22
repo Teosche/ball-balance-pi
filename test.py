@@ -164,7 +164,7 @@ def vision(stop_event1):
         global t2
         global t3
         
-        pid = PIDController(kp=0.05, ki=0.0025, kd=0.025, setpoint=(0, 0)) ################################
+        pid = PIDController(kp=0.05, ki=0.0005, kd=0.019, setpoint=(0.7, 0.8)) ################################
         lock = True
         lock1 = True
         posizione_x_prec = 10
@@ -186,7 +186,7 @@ def vision(stop_event1):
                 100000,
                 param1=100,
                 param2=30,
-                minRadius=20,
+                minRadius=5,
                 maxRadius=80,
             )
 
@@ -199,7 +199,7 @@ def vision(stop_event1):
                     posizione_x = round(x / 2)
                     posizione_y = round(y / 2) #########################################################
                     #print(f"Posizione: (X:{posizione_x}: Y:{posizione_y})")
-                    d=-10
+                    d=-7
                     posizione_x = linear_relation(15, 120, -6, 6, posizione_x, False)
                     posizione_y = linear_relation(15, 120, -6, 6, posizione_y, False)
                     raggio = math.sqrt(posizione_x**2 + posizione_y**2)
@@ -315,9 +315,9 @@ def genera_angolo(stop_event1):
 
 
 def setup_servo():
-    pulse = 500 + (30 * 2000 / 180)
+    pulse = 500 + (32 * 2000 / 180)
     pi.set_servo_pulsewidth(SERVO_PIN, pulse)
-    pulse1 = 500 + (30 * 2000 / 180)
+    pulse1 = 500 + (29 * 2000 / 180)
     pi.set_servo_pulsewidth(SERVO_PIN1, pulse1)
     pulse2 = 500 + (30 * 2000 / 180)
     pi.set_servo_pulsewidth(SERVO_PIN2, pulse2)
@@ -344,7 +344,7 @@ def setAngle():
                 #print("Motore 2 = "+str(t2))
                 #print("Motore 3 = "+str(t3))
                 
-                pulse = 500 + ((t1) * 2000 / 180)
+                pulse = 500 + ((t1+2) * 2000 / 180)
                 pi.set_servo_pulsewidth(SERVO_PIN, pulse)
                 pulse1 = 500 + ((t2) * 2000 / 180)
                 pi.set_servo_pulsewidth(SERVO_PIN1, pulse1)
@@ -368,9 +368,9 @@ def setAngle():
         print("Interruzione")
     finally:
         setup_servo()
-        pi.set_servo_pulsewidth(SERVO_PIN, 30)
-        pi.set_servo_pulsewidth(SERVO_PIN1, 30)
-        pi.set_servo_pulsewidth(SERVO_PIN2, 30)
+        pi.set_servo_pulsewidth(SERVO_PIN, 35)
+        pi.set_servo_pulsewidth(SERVO_PIN1, 35)
+        pi.set_servo_pulsewidth(SERVO_PIN2, 35)
 
 
 def calibrate_servo():
