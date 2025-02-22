@@ -103,7 +103,7 @@ def inverse_kinematic(L1, L2, Xt, Yt):
     if v > 1:
         v = 1
     if v < -1:
-        v = -1  # Correzione: se v < -1, va clippato a -1, non a 1.
+        v = -1
     theta_2 = math.acos(v)
     theta_1 = math.atan2(Yt, Xt) - math.atan2(
         L2 * math.sin(theta_2), L1 + L2 * math.cos(theta_2)
@@ -111,7 +111,7 @@ def inverse_kinematic(L1, L2, Xt, Yt):
     return round(math.degrees(theta_1))
 
 
-servo_history = collections.deque(maxlen=3)  # Ultimi 3 movimenti
+servo_history = collections.deque(maxlen=3)
 
 
 def smooth_servo_movement(theta_1, theta_2, theta_3):
