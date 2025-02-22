@@ -99,7 +99,7 @@ def inverse_kinematic(L1, L2, Xt, Yt):
     Returns:
         The computed angle (in degrees) for the first joint.
     """
-    v = (Xt**2 + Yt**2 - L1**2 - L2**2) / (2 * L1 * L2)
+    v = (pow(Xt, 2) + pow(Yt, 2) - pow(L1, 2) - pow(L2, 2)) / (2 * L1 * L2)
     if v > 1:
         v = 1
     if v < -1:
@@ -151,11 +151,10 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             pos_x = raggio * math.cos(angolo_totale)
             pos_y = raggio * math.sin(angolo_totale)
 
-            offset_x, offset_y = 13.2, 3.2
-            pos_x = pos_x + offset_x
-            pos_y = pos_y + offset_y
+            offset_x, offset_y = 0, 0
+            pos_x = round(pos_x + offset_x)
+            pos_y = round(pos_y + offset_y)
 
-            # Applichiamo il PID con i nuovi parametri
             control_signal = pid.update((pos_x, pos_y), dt)
             print(f"PID Output: ({control_signal[0]:.2f}, {control_signal[1]:.2f})")
 
