@@ -26,10 +26,6 @@ class Camera:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurFrame = cv2.GaussianBlur(gray, (17, 17), 0)
 
-        # Init variables
-        global x
-        global y
-        global speed
         lock = True
         previous_x = 10
         previous_y = 120
@@ -68,7 +64,7 @@ class Camera:
                 previous_x = x
                 previous_y = y
 
-                time.sleep(0.1)
+                time.sleep(0.05)
         else:
             print("No circles detected.")
             speed = 0
