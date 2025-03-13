@@ -111,18 +111,6 @@ def inverse_kinematic(L1, L2, Xt, Yt):
     return round(math.degrees(theta_1))
 
 
-servo_history = collections.deque(maxlen=3)
-
-
-def smooth_servo_movement(theta_1, theta_2, theta_3):
-
-    servo_history.append((theta_1, theta_2, theta_3))
-    avg_theta_1 = sum(t[0] for t in servo_history) / len(servo_history)
-    avg_theta_2 = sum(t[1] for t in servo_history) / len(servo_history)
-    avg_theta_3 = sum(t[2] for t in servo_history) / len(servo_history)
-    return avg_theta_1, avg_theta_2, avg_theta_3
-
-
 def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
     dt = 0.035
     previous_theta_1 = 30
