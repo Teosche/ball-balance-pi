@@ -115,13 +115,14 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
     previous_theta_1 = 30
     previous_theta_2 = 30
     previous_theta_3 = 30
+
     while not stop_event.is_set():
         frame = camera.capture_frame()
         camera.detect_circle(frame)
 
-        if camera.circle is not None:
+        if camera.circle:
             circles = np.round(camera.circle[0, :]).astype("int")
-            x_raw, y_raw, r = circles[0]
+            x_raw, y_raw = circles[0]
 
             pos_x = round(x_raw / 2)
             pos_y = round(y_raw / 2)
@@ -160,7 +161,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
             theta_2 = 90 - inverse_kinematic(6.5, 9, 0, h2)
             theta_3 = 90 - inverse_kinematic(6.5, 9, 0, h3)
 
-            max_step = 2.5
+            max_step = 5
 
             theta_1 = max(
                 previous_theta_1 - max_step, min(previous_theta_1 + max_step, theta_1)
