@@ -1,7 +1,6 @@
 import threading
 import pigpio
 
-from api import app, init_camera
 from camera import Camera
 from pid import PID
 from servo import Servo
@@ -10,7 +9,6 @@ from balancer import balance_ball
 if __name__ == "__main__":
     pi = pigpio.pi()
     camera = Camera()
-    init_camera(camera)
     pid = PID(kp=0.021, ki=0.001, kd=0.01, setpoint=(0, 0))
 
     servo = Servo(pi)
