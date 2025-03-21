@@ -120,7 +120,7 @@ def balance_ball(stop_event, camera: Camera, pid: PID, servo: Servo):
         frame = camera.capture_frame()
         camera.detect_circle(frame)
 
-        if camera.circle:
+        if camera.circle is not None:
             circles = np.round(camera.circle[0, :]).astype("int")
             x_raw, y_raw = circles[0]
 
