@@ -2,7 +2,6 @@ import math
 import time
 import numpy as np
 import pigpio
-import collections
 
 
 from pid import PID
