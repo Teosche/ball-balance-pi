@@ -47,13 +47,20 @@ if __name__ == "__main__":
             break
         time.sleep(0.03)
 
+        stop_event = threading.Event()
+        vision_thread = threading.Thread(
+            target=balance_ball, args=(stop_event, camera, pid, servo)
+        )
+        vision_thread.daemon = True
+        vision_thread.start()
+
     cv2.destroyAllWindows()
 
-    stop_event = threading.Event()
-    vision_thread = threading.Thread(
-        target=balance_ball, args=(stop_event, camera, pid, servo)
-    )
-    vision_thread.daemon = True
-    vision_thread.start()
+    # stop_event = threading.Event()
+    # vision_thread = threading.Thread(
+    #     target=balance_ball, args=(stop_event, camera, pid, servo)
+    # )
+    # vision_thread.daemon = True
+    # vision_thread.start()
 
     app.run(debug=True, use_reloader=False, host="0.0.0.0", port=5000)
