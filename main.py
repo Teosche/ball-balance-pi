@@ -10,8 +10,9 @@ from balancer import balance_ball
 if __name__ == "__main__":
     pi = pigpio.pi()
     camera = Camera()
-    pid = PID(kp=0.021, ki=0.001, kd=0.01, setpoint=(0, 0))
+    init_camera(camera)  # Passa l'istanza della camera all'API
 
+    pid = PID(kp=0.021, ki=0.001, kd=0.01, setpoint=(0, 0))
     servo = Servo(pi)
 
     stop_event = threading.Event()
@@ -22,5 +23,5 @@ if __name__ == "__main__":
 
     threading.Thread(
         target=app.run,
-        kwargs={"host": "0.0.0.0", "port": 5000, "debug": False},
+        kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "use_reloader": False},
     ).start()

@@ -1,9 +1,20 @@
 from flask import Flask, Response
-from camera import Camera
 
 app = Flask(__name__)
 
-camera = Camera()
+# Global camera instance, will be set via init_camera() from main.py
+camera = None
+
+
+def init_camera(cam):
+    """
+    Initialize the global camera instance for API streaming.
+
+    Args:
+        cam: An instance of the Camera class.
+    """
+    global camera
+    camera = cam
 
 
 def generate_frames():

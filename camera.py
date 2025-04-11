@@ -70,7 +70,7 @@ class Camera:
             blur_frame,
             cv2.HOUGH_GRADIENT,
             1.2,
-            100000,
+            50,
             param1=100,
             param2=40,
             minRadius=50,
