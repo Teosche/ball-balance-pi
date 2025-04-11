@@ -1,18 +1,23 @@
+import threading
 from flask import Flask, Response
 import pigpio
 
 from camera import Camera
-
+from pid import PID
+from servo import Servo
+from balancer import balance_ball
 
 app = Flask(__name__)
 
 pi = pigpio.pi()
 camera = Camera()
+pid = PID(kp=0.021, ki=0.001, kd=0.01, setpoint=(0, 0))
+servo = Servo(pi)
 
 
 def generate_frames():
     """
-    Generate captured frame for MJPEG streaming.
+    Generate JPEG-encoded frames from the camera.
     """
     while True:
         frame = camera.get_frame()
@@ -22,7 +27,7 @@ def generate_frames():
 @app.route("/")
 def index():
     """
-    MJPEG video stream endpoint.
+    Video stream route.
     """
     return Response(
         generate_frames(), mimetype="multipart/x-mixed-replace; boundary=frame"
@@ -30,4 +35,11 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    stop_event = threading.Event()
+    vision_thread = threading.Thread(
+        target=balance_ball, args=(stop_event, camera, pid, servo)
+    )
+    vision_thread.daemon = True
+    vision_thread.start()
+
+    app.run(debug=True, use_reloader=False, host="0.0.0.0", port=5000)
