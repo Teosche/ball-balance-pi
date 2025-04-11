@@ -12,6 +12,11 @@ if __name__ == "__main__":
     camera = Camera()
     init_camera(camera)  # Passa l'istanza della camera all'API
 
+    threading.Thread(
+        target=app.run,
+        kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "use_reloader": False},
+    ).start()
+
     pid = PID(kp=0.021, ki=0.001, kd=0.01, setpoint=(0, 0))
     servo = Servo(pi)
 
@@ -20,8 +25,3 @@ if __name__ == "__main__":
         target=balance_ball, args=(stop_event, camera, pid, servo)
     )
     vision_thread.start()
-
-    threading.Thread(
-        target=app.run,
-        kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "use_reloader": False},
-    ).start()
