@@ -8,6 +8,8 @@ from servo import Servo
 from balancer import balance_ball
 
 app = Flask(__name__)
+api_port = 5000
+api_host = "0.0.0.0"
 
 
 def generate_frames():
@@ -35,6 +37,8 @@ if __name__ == "__main__":
     pid = PID(kp=0.021, ki=0.001, kd=0.01, setpoint=(0, 0))
     servo = Servo(pi)
 
+    app.run(debug=True, host=api_host, port=api_port)
+
     stop_event = threading.Event()
     vision_thread = threading.Thread(
         target=balance_ball, args=(stop_event, camera, pid, servo)
@@ -48,4 +52,3 @@ if __name__ == "__main__":
     flask_thread.start()
 
     vision_thread.join()
-    flask_thread.join()
