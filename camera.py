@@ -76,3 +76,45 @@ class Camera:
             minRadius=50,
             maxRadius=80,
         )
+
+    def get_position_information(self, frame) -> tuple:
+        """
+        Process the detected circles to annotate the frame, calculate speed, and update position.
+
+        Returns:
+            tuple: The (x, y) coordinates of the first detected ball, or (None, None) if none are detected.
+        """
+        circles = np.round(self.circle[0, :]).astype("int")
+        if len(circles) > 0:
+            x, y, r = circles[0]
+            self.print_circle(frame, x, y, r)
+            if self.previous_x is None or self.previous_y is None:
+                self.previous_x, self.previous_y = x, y
+            self.speed = self.calculate_speed(x, y, self.previous_x, self.previous_y)
+            self.previous_x, self.previous_y = x, y
+            return x, y
+        else:
+            return None, None
+
+    def print_circle(self, frame, x, y, r):
+        """
+        Draw a circle and its center on the frame.
+        """
+        cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
+        cv2.circle(frame, (x, y), 2, (0, 0, 255), 3)
+
+    def calculate_speed(self, x: int, y: int, previous_x: int, previous_y: int) -> int:
+        """
+        Calculate the speed of the detected object between frames.
+
+        Args:
+            x (int): Current x-coordinate.
+            y (int): Current y-coordinate.
+            previous_x (int): Previous x-coordinate.
+            previous_y (int): Previous y-coordinate.
+
+        Returns:
+            int: The rounded speed value.
+        """
+        module = math.sqrt((x - previous_x) ** 2 + (y - previous_y) ** 2)
+        return round(module)
