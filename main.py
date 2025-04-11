@@ -1,4 +1,6 @@
 import threading
+import time
+import cv2
 from flask import Flask, Response
 import pigpio
 
@@ -35,6 +37,17 @@ def index():
 
 
 if __name__ == "__main__":
+
+    while True:
+        frame_jpeg = camera.get_frame()
+        frame = cv2.imdecode(np.frombuffer(frame_jpeg, np.uint8), cv2.IMREAD_COLOR)
+        cv2.imshow("Camera Detection", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+        time.sleep(0.03)
+
+    cv2.destroyAllWindows()
+
     stop_event = threading.Event()
     vision_thread = threading.Thread(
         target=balance_ball, args=(stop_event, camera, pid, servo)
