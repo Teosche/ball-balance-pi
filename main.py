@@ -22,7 +22,7 @@ def generate_frames():
 @app.route("/")
 def index():
     """
-    Streaming.
+    Streaming endpoint.
     """
     return Response(
         generate_frames(), mimetype="multipart/x-mixed-replace; boundary=frame"
@@ -36,7 +36,6 @@ if __name__ == "__main__":
     servo = Servo(pi)
 
     stop_event = threading.Event()
-
     vision_thread = threading.Thread(
         target=balance_ball, args=(stop_event, camera, pid, servo)
     )
@@ -47,3 +46,6 @@ if __name__ == "__main__":
         kwargs={"host": "0.0.0.0", "port": 5000, "debug": False, "use_reloader": False},
     )
     flask_thread.start()
+
+    vision_thread.join()
+    flask_thread.join()
